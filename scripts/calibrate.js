@@ -25,9 +25,19 @@ function parseFrontmatter(raw) {
 async function main() {
   const files = fs.readdirSync(NOTES_DIR).filter((f) => f.endsWith(".md")).sort();
   const rows = [];
-  const provider = process.argv.includes("--provider")
-    ? process.argv[process.argv.indexOf("--provider") + 1]
-    : "mock";
+  // Resolve provider robustly. Accept `--provider X`, and also a bare positional
+  // token (e.g. `gemini`) so the run still works if npm swallows the `--provider`
+  // flag — which happens when the `--` separator is dropped (common in PowerShell).
+  const KNOWN_PROVIDERS = ["mock", "anthropic", "gemini", "openai"];
+  const argv = process.argv.slice(2);
+  const flagIdx = argv.indexOf("--provider");
+  let provider = "mock";
+  if (flagIdx !== -1 && argv[flagIdx + 1]) {
+    provider = argv[flagIdx + 1];
+  } else {
+    const bare = argv.find((a) => KNOWN_PROVIDERS.includes(a));
+    if (bare) provider = bare;
+  }
 
   for (const f of files) {
     const { meta, body } = parseFrontmatter(fs.readFileSync(path.join(NOTES_DIR, f), "utf-8"));

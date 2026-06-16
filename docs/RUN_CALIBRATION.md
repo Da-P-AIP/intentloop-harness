@@ -296,5 +296,13 @@ pip install "axis-hfe[gemini]"
 python -c "import hypothesis_field; print('axis-hfe OK')"
 $env:GEMINI_API_KEY = "AIza..."
 node bin/intentloop.js --file notes/01-cache-across-sessions.md --provider gemini   # 疎通1本
-npm run calibrate -- --provider gemini                                              # 本番5本
+node scripts/calibrate.js --provider gemini                                         # 本番5本（確定・推奨）
 ```
+
+> **PowerShell の `--` 罠に注意**: `npm run calibrate -- --provider gemini` は、PowerShell が
+> 区切りの `--` を食ってしまうと `npm run calibrate --provider gemini` に化け、今度は npm が
+> `--provider` を食って calibrate.js には bare `gemini` だけが届く。これが「Gemini 指定なのに
+> mock で回る」正体。確実なのは **`node scripts/calibrate.js --provider gemini` を直接叩く**こと。
+> npm を使いたいなら引数を渡さない専用スクリプト **`npm run calibrate:gemini`** を使う（同・確定）。
+> なお calibrate.js は bare positional（`gemini` 単体）も拾うよう強化済みなので、万一 `--provider`
+> が剥がれても provider=gemini として認識される。

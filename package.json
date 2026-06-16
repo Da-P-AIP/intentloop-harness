@@ -10,6 +10,8 @@
   "scripts": {
     "dev": "node bin/intentloop.js --file notes/01-cache-across-sessions.md",
     "calibrate": "node scripts/calibrate.js",
+    "calibrate:gemini": "node scripts/calibrate.js --provider gemini",
+    "calibrate:anthropic": "node scripts/calibrate.js --provider anthropic",
     "test": "node scripts/selftest.js",
     "verify-ledger": "node -e \"console.log(require('./packages/core/ledger').verifyChain())\""
   },
