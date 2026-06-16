@@ -1,0 +1,6 @@
+# Wire #1 reasoning core. Import name is `hypothesis_field`.
+axis-hfe>=0.1.0
+
+# For real (non-mock) runs, install the provider extra you use, e.g.:
+#   pip install "axis-hfe[anthropic]"
+# Dev/offline runs use mock_llm and need no provider SDK.

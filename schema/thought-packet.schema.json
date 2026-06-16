@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://da-p-aip.dev/schema/thought-packet.schema.json",
+  "title": "AxisThoughtPacket (intentloop subset)",
+  "description": "Minimal axis-thought-packet-compatible schema for Milestone 1. An evaluated unit of meaning carried across sessions.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["id", "schema_version", "created_at", "session_id", "intent", "content", "hfe", "gate", "needs_verification", "lineage"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "schema_version": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "minLength": 1 },
+    "session_id": { "type": "string", "minLength": 1 },
+    "intent": { "type": "string", "minLength": 1 },
+    "content": { "type": "string", "minLength": 1 },
+    "source_note": { "type": "string" },
+    "hfe": {
+      "type": "object",
+      "required": ["score", "vector", "source", "iterations_run", "preset"],
+      "properties": {
+        "score": { "type": "number" },
+        "vector": {
+          "type": "object",
+          "required": ["accuracy", "consistency", "risk", "novelty", "feasibility", "divergence"],
+          "properties": {
+            "accuracy": { "type": "number", "minimum": 0, "maximum": 1 },
+            "consistency": { "type": "number", "minimum": 0, "maximum": 1 },
+            "risk": { "type": "number", "minimum": 0, "maximum": 1 },
+            "novelty": { "type": "number", "minimum": 0, "maximum": 1 },
+            "feasibility": { "type": "number", "minimum": 0, "maximum": 1 },
+            "divergence": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        "source": { "type": "string" },
+        "iterations_run": { "type": "number" },
+        "preset": { "type": "string" }
+      }
+    },
+    "gate": {
+      "type": "object",
+      "required": ["passed", "thresholds", "reasons"],
+      "properties": {
+        "passed": { "type": "boolean" },
+        "thresholds": { "type": "object" },
+        "reasons": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "needs_verification": { "type": "boolean" },
+    "lineage": {
+      "type": "object",
+      "required": ["prev_packet_ids"],
+      "properties": {
+        "prev_packet_ids": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

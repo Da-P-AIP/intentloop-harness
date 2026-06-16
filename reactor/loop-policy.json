@@ -1,0 +1,28 @@
+{
+  "$comment": "Procedural memory: how the loop behaves. Read at runtime; never hard-code these in code.",
+  "version": 1,
+  "gate": {
+    "$comment": "Hard thresholds from BUILD_BRIEF section 3. Persist only if ALL pass.",
+    "risk_max": 0.40,
+    "consistency_min": 0.70,
+    "accuracy_min": 0.80
+  },
+  "loop": {
+    "$comment": "Bounded iteration. max_iterations is the hard cap; target_pass_rate is the calibration goal.",
+    "max_iterations": 2,
+    "target_pass_rate": 0.80
+  },
+  "hfe": {
+    "$comment": "Which ideal preset and how many internal HFE iterations per run.",
+    "ideal_preset": "default",
+    "iterations": 2,
+    "count": 3,
+    "provider_dev": "mock",
+    "provider_prod": "anthropic",
+    "model_prod": "claude-sonnet-4-6"
+  },
+  "verification": {
+    "$comment": "Verify-before-trust: fused/jumped hypotheses are not durable until checked.",
+    "flag_sources": ["fused", "jump", "self_corrected"]
+  }
+}

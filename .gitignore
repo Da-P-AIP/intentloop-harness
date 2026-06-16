@@ -1,0 +1,17 @@
+# Runtime memory — not source. Keep code repo and knowledge decoupled.
+packets/
+ledger/
+*.log
+
+# Secrets
+.env
+
+# Node / Python
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+
+# Scratch
+probe_tmp.py
+/tmp/
