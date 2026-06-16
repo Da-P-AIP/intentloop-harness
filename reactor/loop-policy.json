@@ -15,7 +15,7 @@
   "hfe": {
     "$comment": "Which ideal preset and how many internal HFE iterations per run.",
     "ideal_preset": "default",
-    "iterations": 2,
+    "iterations": 1,
     "count": 3,
     "provider_dev": "mock",
     "provider_prod": "gemini",

@@ -20,32 +20,39 @@ const MOCK_VECTOR_CONSTANTS = {
   consistency: 0.9579375,
   risk:        0.163203125,
 };
-// Template tags found exclusively in axis-hfe mock content
-const MOCK_CONTENT_TAGS = ["[非線形合成", "[自己修正", "問題「"];
+// Template tags that may appear in axis-hfe mock content.
+// NOTE: these also appear in real HFE pipeline stage labels (Gemini output) and can
+// bleed into continuity context from prior packets — do NOT use for isMock decisions.
+// Kept here only as auxiliary display hints.
+const MOCK_CONTENT_TAGS = ["[非線形合成", "[自己修正"];
 // Tolerance for floating-point comparison (1e-6 << the mock values' precision)
 const MOCK_TOLERANCE = 1e-6;
 
 /**
- * Returns { isMock, reasons[] } for a single hfeResult object.
- * Uses a composite of three independent signals so no single metric can
- * produce a false positive on its own.
+ * Returns { isMock, reasons[], aux[] } for a single hfeResult object.
  *
- *   (1) Content contains axis-hfe mock template tags
+ * Decisive signals (contribute to isMock):
  *   (2) The 3 gating axes match known mock constants within MOCK_TOLERANCE
  *
  * Signal (3) — cross-note identical score — is applied after all notes are
  * collected; see the post-loop block in main().
+ *
+ * Auxiliary hints (display only, NOT decisive):
+ *   (1) Content contains axis-hfe mock template tags — also present in real HFE
+ *       pipeline stage labels and in continuity context from prior packets, so
+ *       cannot distinguish mock from real without vector confirmation.
  */
 function detectMockFallback(hfeResult) {
   const content = hfeResult.best?.content ?? "";
   const v       = hfeResult.best?.vector  ?? {};
   const reasons = [];
+  const aux     = [];
 
-  // Signal (1): template tag in content
+  // Signal (1): template tag in content — auxiliary only, not decisive
   const tagHit = MOCK_CONTENT_TAGS.find((tag) => content.includes(tag));
-  if (tagHit) reasons.push(`content tag "${tagHit}"`);
+  if (tagHit) aux.push(`content tag "${tagHit}" (not decisive)`);
 
-  // Signal (2): gating axes ≈ mock constants
+  // Signal (2): gating axes ≈ mock constants — decisive
   const accClose  = Math.abs((v.accuracy    ?? NaN) - MOCK_VECTOR_CONSTANTS.accuracy)    < MOCK_TOLERANCE;
   const consClose = Math.abs((v.consistency ?? NaN) - MOCK_VECTOR_CONSTANTS.consistency) < MOCK_TOLERANCE;
   const riskClose = Math.abs((v.risk        ?? NaN) - MOCK_VECTOR_CONSTANTS.risk)        < MOCK_TOLERANCE;
@@ -56,7 +63,7 @@ function detectMockFallback(hfeResult) {
     );
   }
 
-  return { isMock: reasons.length > 0, reasons };
+  return { isMock: reasons.length > 0, reasons, aux };
 }
 
 // ── Utilities ─────────────────────────────────────────────────────────────────
@@ -118,13 +125,15 @@ async function main() {
     const r = await runLoop({ note: body, provider, quiet: true, sessionId: `calib_${f}` });
     const v = r.hfe.best.vector;
 
-    // Per-note mock-fallback check (signals 1 & 2)
+    // Per-note mock-fallback check (signals 2; signal 1 aux-only)
     let isMock = false;
     let mockReasons = [];
+    let mockAux = [];
     if (detectFallback) {
       const det = detectMockFallback(r.hfe);
       isMock      = det.isMock;
       mockReasons = det.reasons;
+      mockAux     = det.aux ?? [];
     }
 
     rows.push({
@@ -138,6 +147,7 @@ async function main() {
       persisted:   r.persisted,
       isMock,
       mockReasons,
+      mockAux,
     });
 
     const statusLabel = r.persisted ? "PERSISTED" : "REJECTED";
@@ -147,6 +157,9 @@ async function main() {
     );
     if (isMock) {
       console.warn(`  ⚠ MOCK-FALLBACK detected on ${f}: ${mockReasons.join("; ")}`);
+    }
+    if (!isMock && mockAux.length > 0) {
+      console.log(`  aux (non-decisive): ${mockAux.join("; ")}`);
     }
 
     // Inter-note sleep — skip after the last note
