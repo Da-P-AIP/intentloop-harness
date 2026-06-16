@@ -5,7 +5,8 @@
     "$comment": "Hard thresholds from BUILD_BRIEF section 3. Persist only if ALL pass.",
     "risk_max": 0.40,
     "consistency_min": 0.70,
-    "accuracy_min": 0.80
+    "accuracy_min": 0.80,
+    "divergence_max": 0.47
   },
   "loop": {
     "$comment": "Bounded iteration. max_iterations is the hard cap; target_pass_rate is the calibration goal.",

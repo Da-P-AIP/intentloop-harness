@@ -12,7 +12,7 @@ function loadPolicy() {
   return JSON.parse(fs.readFileSync(POLICY_FILE, "utf-8"));
 }
 
-// vector: { accuracy, consistency, risk, ... }
+// vector: { accuracy, consistency, risk, [divergence], ... }
 function evaluate(vector, policy) {
   const g = (policy || loadPolicy()).gate;
   const reasons = [];
@@ -21,13 +21,16 @@ function evaluate(vector, policy) {
     ["consistency", vector.consistency >= g.consistency_min, `consistency ${fmt(vector.consistency)} >= ${g.consistency_min}`],
     ["accuracy", vector.accuracy >= g.accuracy_min, `accuracy ${fmt(vector.accuracy)} >= ${g.accuracy_min}`],
   ];
+  // Applied only when policy defines divergence_max AND the vector provides the axis.
+  // Skipping either keeps backward compat with old policy files and mock vectors.
+  if (g.divergence_max !== undefined && vector.divergence !== undefined) {
+    checks.push(["divergence", vector.divergence <= g.divergence_max, `divergence ${fmt(vector.divergence)} <= ${g.divergence_max}`]);
+  }
   for (const [, ok, msg] of checks) reasons.push(`${ok ? "PASS" : "FAIL"}: ${msg}`);
   const passed = checks.every(([, ok]) => ok);
-  return {
-    passed,
-    thresholds: { risk_max: g.risk_max, consistency_min: g.consistency_min, accuracy_min: g.accuracy_min },
-    reasons,
-  };
+  const thresholds = { risk_max: g.risk_max, consistency_min: g.consistency_min, accuracy_min: g.accuracy_min };
+  if (g.divergence_max !== undefined) thresholds.divergence_max = g.divergence_max;
+  return { passed, thresholds, reasons };
 }
 
 function fmt(n) {

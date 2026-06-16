@@ -46,6 +46,24 @@ check("gate is exactly at boundary -> pass (>= / <=)", () => {
   assert.strictEqual(r.passed, true);
 });
 
+check("gate REJECTS divergence above max (calibration: notes 02/04 pattern)", () => {
+  const r = gate.evaluate({ accuracy: 0.9, consistency: 0.85, risk: 0.1, divergence: 0.50 }, policy);
+  assert.strictEqual(r.passed, false);
+  assert.ok(r.reasons.some(s => s.startsWith("FAIL") && s.includes("divergence")), "divergence reason missing");
+});
+
+check("gate PASSES divergence below max (calibration: notes 01/03/05 pattern)", () => {
+  const r = gate.evaluate({ accuracy: 0.9, consistency: 0.85, risk: 0.1, divergence: 0.40 }, policy);
+  assert.strictEqual(r.passed, true);
+  assert.ok(r.reasons.some(s => s.startsWith("PASS") && s.includes("divergence")), "divergence reason missing");
+});
+
+check("gate backward-compat: no divergence in vector skips the check", () => {
+  const r = gate.evaluate({ accuracy: 0.9, consistency: 0.85, risk: 0.1 }, policy);
+  assert.strictEqual(r.passed, true);
+  assert.ok(!r.reasons.some(s => s.includes("divergence")), "divergence reason should be absent");
+});
+
 check("schema REJECTS a packet missing required fields", () => {
   const r = validate({ id: "x" }, packetize.loadSchema());
   assert.strictEqual(r.valid, false);
