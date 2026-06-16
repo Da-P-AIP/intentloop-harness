@@ -18,8 +18,13 @@
     "iterations": 2,
     "count": 3,
     "provider_dev": "mock",
-    "provider_prod": "anthropic",
-    "model_prod": "claude-sonnet-4-6"
+    "provider_prod": "gemini",
+    "model_prod": "claude-sonnet-4-6",
+    "models": {
+      "anthropic": "claude-sonnet-4-6",
+      "gemini": "gemini-2.5-flash",
+      "openai": "gpt-4o"
+    }
   },
   "verification": {
     "$comment": "Verify-before-trust: fused/jumped hypotheses are not durable until checked.",

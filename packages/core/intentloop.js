@@ -45,7 +45,7 @@ async function runLoop(opts) {
       iterations: policy.hfe.iterations,
       count: policy.hfe.count,
       provider,
-      model: provider === "anthropic" ? policy.hfe.model_prod : undefined,
+      model: (policy.hfe.models && policy.hfe.models[provider]) || undefined,
     });
     if (!res.ok) {
       ledger.append("evaluate_error", { attempt, error: res.error });
