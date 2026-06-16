@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 560" font-family="'Hiragino Sans','Yu Gothic UI','Noto Sans JP',sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#455A64"/></marker>
+    <marker id="arrUp" markerWidth="9" markerHeight="9" refX="3" refY="1" orient="auto"><path d="M0,6 L3,0 L6,6 Z" fill="#455A64"/></marker>
+    <marker id="arrP" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#8E24AA"/></marker>
+  </defs>
+
+  <rect x="0" y="0" width="1060" height="560" fill="#FFFFFF"/>
+  <text x="530" y="28" text-anchor="middle" font-size="22" font-weight="700" fill="#1F2933">intentloop-harness 構築図</text>
+  <text x="530" y="46" text-anchor="middle" font-size="11.5" fill="#607D8B">セッションを跨いで閉じる永続ループ（loop engineering）｜ 宣言・手続き・エピソードの三系統記憶</text>
+
+  <!-- top row: input + HFE callout -->
+  <rect x="30" y="62" width="250" height="40" rx="8" fill="#E3F2FD" stroke="#1E88E5" stroke-width="1.5"/>
+  <text x="155" y="86" text-anchor="middle" font-size="12.5" fill="#0D47A1">入力：課題 / ログ / 開発ノート</text>
+
+  <rect x="620" y="62" width="410" height="40" rx="8" fill="#FFF3E0" stroke="#FB8C00" stroke-width="1.5"/>
+  <text x="825" y="80" text-anchor="middle" font-size="12" fill="#E65100">HFE：6軸品質ゲート（④で作動）</text>
+  <text x="825" y="95" text-anchor="middle" font-size="10.5" fill="#E65100">accuracy / consistency / risk / novelty / feasibility / divergence ・ 詰まった時の論理整理</text>
+  <line x1="660" y1="102" x2="466" y2="142" stroke="#FB8C00" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+
+  <line x1="82" y1="102" x2="82" y2="142" stroke="#455A64" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- pipeline band -->
+  <rect x="20" y="118" width="1020" height="80" rx="12" fill="#FFF8E1" stroke="#F9A825" stroke-width="1.5"/>
+  <text x="32" y="134" font-size="11" font-weight="700" fill="#F57F17">推論ループ（Pipeline）</text>
+
+  <!-- 8 steps -->
+  <g font-size="11.5" fill="#5D4037">
+    <rect x="30"  y="144" width="104" height="46" rx="7" fill="#FFFFFF" stroke="#F9A825"/>
+    <text x="82"  y="165" text-anchor="middle" font-weight="700">観測</text><text x="82"  y="180" text-anchor="middle" font-size="9.5" fill="#8D6E63">Observe</text>
+    <rect x="158" y="144" width="104" height="46" rx="7" fill="#FFFFFF" stroke="#F9A825"/>
+    <text x="210" y="165" text-anchor="middle" font-weight="700">パケット化</text><text x="210" y="180" text-anchor="middle" font-size="9.5" fill="#8D6E63">Packetize</text>
+    <rect x="286" y="144" width="104" height="46" rx="7" fill="#FFFFFF" stroke="#F9A825"/>
+    <text x="338" y="165" text-anchor="middle" font-weight="700">計画</text><text x="338" y="180" text-anchor="middle" font-size="9.5" fill="#8D6E63">Plan</text>
+    <rect x="414" y="144" width="104" height="46" rx="7" fill="#FFF3E0" stroke="#FB8C00" stroke-width="1.6"/>
+    <text x="466" y="165" text-anchor="middle" font-weight="700" fill="#E65100">評価 ④</text><text x="466" y="180" text-anchor="middle" font-size="9.5" fill="#E65100">Evaluate · HFE</text>
+    <rect x="542" y="144" width="104" height="46" rx="7" fill="#FFFFFF" stroke="#F9A825"/>
+    <text x="594" y="165" text-anchor="middle" font-weight="700">関門</text><text x="594" y="180" text-anchor="middle" font-size="9.5" fill="#8D6E63">Consent Gate</text>
+    <rect x="670" y="144" width="104" height="46" rx="7" fill="#FFFFFF" stroke="#F9A825"/>
+    <text x="722" y="165" text-anchor="middle" font-weight="700">実行</text><text x="722" y="180" text-anchor="middle" font-size="9.5" fill="#8D6E63">Act</text>
+    <rect x="798" y="144" width="104" height="46" rx="7" fill="#FFFFFF" stroke="#F9A825"/>
+    <text x="850" y="165" text-anchor="middle" font-weight="700">検証</text><text x="850" y="180" text-anchor="middle" font-size="9.5" fill="#8D6E63">Verify</text>
+    <rect x="926" y="144" width="104" height="46" rx="7" fill="#F3E5F5" stroke="#8E24AA" stroke-width="1.6"/>
+    <text x="978" y="165" text-anchor="middle" font-weight="700" fill="#6A1B9A">永続化</text><text x="978" y="180" text-anchor="middle" font-size="9.5" fill="#6A1B9A">Persist · ATP</text>
+  </g>
+  <g stroke="#455A64" stroke-width="1.4" marker-end="url(#arr)">
+    <line x1="134" y1="167" x2="156" y2="167"/><line x1="262" y1="167" x2="284" y2="167"/>
+    <line x1="390" y1="167" x2="412" y2="167"/><line x1="518" y1="167" x2="540" y2="167"/>
+    <line x1="646" y1="167" x2="668" y2="167"/><line x1="774" y1="167" x2="796" y2="167"/>
+    <line x1="902" y1="167" x2="924" y2="167"/>
+  </g>
+
+  <!-- loop-back lane -->
+  <path d="M978,190 L978,222 L82,222 L82,192" fill="none" stroke="#455A64" stroke-width="1.4" marker-end="url(#arrUp)"/>
+  <rect x="360" y="212" width="340" height="20" rx="10" fill="#FFFFFF"/>
+  <text x="530" y="226" text-anchor="middle" font-size="10.5" fill="#455A64">有界ループ：最大2回・目標80%（暴走防止 ＋ Ledgerで全追跡）</text>
+
+  <!-- ATP write to bus -->
+  <path d="M978,222 L978,260" fill="none" stroke="#8E24AA" stroke-width="1.8" marker-end="url(#arrP)"/>
+  <text x="986" y="248" font-size="10" fill="#6A1B9A">ATP書き出し</text>
+
+  <!-- MCP bus -->
+  <rect x="20" y="262" width="1020" height="40" rx="10" fill="#ECEFF1" stroke="#546E7A" stroke-width="1.5"/>
+  <text x="530" y="280" text-anchor="middle" font-size="13" font-weight="700" fill="#37474F">MCP — 共通アクセス口 / 神経系</text>
+  <text x="530" y="295" text-anchor="middle" font-size="10.5" fill="#546E7A">プロトコルであり、データ層ではない（標準装備）</text>
+
+  <!-- bus to memories (read/write) -->
+  <g stroke="#546E7A" stroke-width="1.5" marker-end="url(#arr)" marker-start="url(#arrUp)">
+    <line x1="186" y1="302" x2="186" y2="334"/>
+    <line x1="530" y1="302" x2="530" y2="334"/>
+    <line x1="874" y1="302" x2="874" y2="334"/>
+  </g>
+
+  <!-- memory systems -->
+  <rect x="30" y="336" width="312" height="186" rx="10" fill="#E8F5E9" stroke="#43A047" stroke-width="1.6"/>
+  <text x="186" y="358" text-anchor="middle" font-size="13" font-weight="700" fill="#1B5E20">宣言的記憶（knowing that）</text>
+  <text x="186" y="376" text-anchor="middle" font-size="11" fill="#2E7D32">三層データ基盤 ＋ RAG</text>
+  <g font-size="10.5" fill="#33691E"><text x="46" y="398">・L1 メダリオン：Bronze/Silver/Gold</text>
+  <text x="46" y="416">　.raw/sources → wiki/sources → concepts</text>
+  <text x="46" y="434">・L2 セマンティック＋オントロジー（links）</text>
+  <text x="46" y="452">・RAG：note本文＝定性的文脈</text>
+  <text x="46" y="476" font-size="10" fill="#558B2F">検索＝内容の関連度 ／ 評価＝HFE 6軸</text></g>
+
+  <rect x="374" y="336" width="312" height="186" rx="10" fill="#FFEBEE" stroke="#E53935" stroke-width="1.6"/>
+  <text x="530" y="358" text-anchor="middle" font-size="13" font-weight="700" fill="#B71C1C">手続き記憶（knowing how）</text>
+  <text x="530" y="376" text-anchor="middle" font-size="11" fill="#C62828">reactor/ ＝ 機能レジストリ</text>
+  <g font-size="10.5" fill="#B71C1C"><text x="390" y="398">・prompts / schemas / templates</text>
+  <text x="390" y="416">・ループ方針：閾値・反復上限</text>
+  <text x="390" y="434">・preset使い分け（safe/creative）</text>
+  <text x="390" y="452">・スキル定義・ハーネス設定</text>
+  <text x="390" y="476" font-size="10" fill="#D32F2F">検索＝能力の一致 ／ 評価＝再現性・安全・コスト</text></g>
+
+  <rect x="718" y="336" width="312" height="186" rx="10" fill="#E0F7FA" stroke="#00ACC1" stroke-width="1.6"/>
+  <text x="874" y="358" text-anchor="middle" font-size="13" font-weight="700" fill="#006064">エピソード記憶（what happened）</text>
+  <text x="874" y="376" text-anchor="middle" font-size="11" fill="#00838F">出来事の記録</text>
+  <g font-size="10.5" fill="#006064"><text x="734" y="398">・Action Ledger（ハッシュ連鎖）</text>
+  <text x="734" y="416">・02_wiki/sessions/</text>
+  <text x="734" y="434">・HFE実行ログ</text>
+  <text x="734" y="452">・＝ observability の背骨</text>
+  <text x="734" y="476" font-size="10" fill="#0097A7">検索＝時間・因果 ／ 評価＝整合性（改竄検知）</text></g>
+
+  <text x="530" y="540" text-anchor="middle" font-size="11.5" fill="#455A64">宣言＝知識 ／ 手続き＝機能 ／ エピソード＝履歴　｜　ATP が運び、MCP が繋ぎ、HFE が選別する</text>
+</svg>
