@@ -8,6 +8,7 @@
     "intentloop": "bin/intentloop.js"
   },
   "scripts": {
+    "start": "node server.js",
     "dev": "node bin/intentloop.js --file notes/01-cache-across-sessions.md",
     "calibrate": "node scripts/calibrate.js",
     "calibrate:gemini": "node scripts/calibrate.js --provider gemini",

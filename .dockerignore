@@ -1,0 +1,27 @@
+# 実行時成果物（コンテナには含めない）
+packets/
+ledger/
+*.log
+calib-stderr.log
+
+# シークレット
+.env
+
+# Node / Python キャッシュ
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# Git / エディタ
+.git/
+.claude/
+
+# ビルド成果物
+dist/
+*.tgz
+
+# テスト用一時ファイル
+probe_tmp.py
+/tmp/
