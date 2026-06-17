@@ -69,6 +69,30 @@ async function runLoop(opts) {
     }
   }
 
+  // --- Lexical safety guard (verify-before-trust hard rail) ---
+  // Check alert text + best HFE content for danger keywords.
+  // Fires regardless of HFE score; forces REJECT + prepends FORCED-ESCALATE reason.
+  const checkText = [opts.note, hfeResult && hfeResult.best ? hfeResult.best.content : ""]
+    .filter(Boolean).join(" ");
+  const dangerCheck = gate.checkDangerKeywords(checkText, policy);
+  if (dangerCheck.triggered) {
+    const originalPassed = gateResult.passed;
+    gateResult = {
+      passed: false,
+      thresholds: gateResult.thresholds,
+      reasons: [
+        `FORCED-ESCALATE: danger keyword matched: "${dangerCheck.matchedKeyword}"`,
+        ...gateResult.reasons,
+      ],
+    };
+    ledger.append("danger_guard", {
+      triggered: true,
+      keyword: dangerCheck.matchedKeyword,
+      original_gate_passed: originalPassed,
+    });
+    log(`[danger-guard] FORCED-ESCALATE — keyword: "${dangerCheck.matchedKeyword}"`);
+  }
+
   // --- Act / Verify / Persist ---
   if (!gateResult.passed) {
     ledger.append("reject", { session_id: sessionId, attempts: attempt });
@@ -92,7 +116,14 @@ async function runLoop(opts) {
   ledger.append("persist", { packet_id: packet.id, file });
   log(`[persist] ATP written + schema-validated -> ${file}`);
 
-  const chain = ledger.verifyChain();
+  let chain;
+  try {
+    chain = ledger.verifyChain();
+  } catch (e) {
+    // Non-fatal: a malformed line in the historical ledger should not block new work.
+    chain = { ok: false, count: -1 };
+    log(`[log] ledger chain verify error (non-fatal): ${e.message}`);
+  }
   log(`[log] ledger chain ${chain.ok ? "intact" : "BROKEN"} (${chain.count} entries)`);
 
   return { persisted: true, sessionId, packet, file, gate: gateResult, hfe: hfeResult, attempts: attempt };

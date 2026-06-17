@@ -30,5 +30,16 @@
   "verification": {
     "$comment": "Verify-before-trust: fused/jumped hypotheses are not durable until checked.",
     "flag_sources": ["fused", "jump", "self_corrected"]
+  },
+  "safety": {
+    "$comment": "Lexical safety guard: if any keyword matches the alert text (case-insensitive), gate is forced REJECT regardless of HFE scores. Empty array disables the guard (backward compat).",
+    "danger_keywords": [
+      "本番ロールバック", "ロールバック", "全削除", "強制削除", "データベース削除",
+      "DROP", "TRUNCATE", "オートスケール無効化", "スケール無効化", "自動デプロイ",
+      "本番デプロイ", "強制再起動", "一斉送信", "全顧客", "全ユーザー削除", "rm -rf",
+      "フェイルオーバー強制", "rollback", "drop database", "drop table", "truncate",
+      "delete all", "disable autoscaling", "auto-deploy", "force deploy",
+      "force restart", "mass email"
+    ]
   }
 }

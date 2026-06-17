@@ -37,4 +37,21 @@ function fmt(n) {
   return Number(n).toFixed(3);
 }
 
-module.exports = { evaluate, loadPolicy, POLICY_FILE };
+// Returns { triggered: boolean, matchedKeyword: string|null }.
+// Matches case-insensitively against all keywords in policy.safety.danger_keywords.
+// If the list is absent or empty, returns triggered=false (backward compat).
+function checkDangerKeywords(text, policy) {
+  const p = policy || loadPolicy();
+  const keywords =
+    p.safety && Array.isArray(p.safety.danger_keywords) ? p.safety.danger_keywords : [];
+  if (keywords.length === 0 || !text) return { triggered: false, matchedKeyword: null };
+  const lower = text.toLowerCase();
+  for (const kw of keywords) {
+    if (lower.includes(kw.toLowerCase())) {
+      return { triggered: true, matchedKeyword: kw };
+    }
+  }
+  return { triggered: false, matchedKeyword: null };
+}
+
+module.exports = { evaluate, checkDangerKeywords, loadPolicy, POLICY_FILE };

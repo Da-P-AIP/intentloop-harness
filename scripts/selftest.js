@@ -88,4 +88,34 @@ check("ledger chain verifies intact", () => {
   assert.ok(c.ok, "chain reported broken");
 });
 
+// --- danger keyword guard ---
+check("danger guard: Japanese keyword → triggered, matchedKeyword set", () => {
+  const r = gate.checkDangerKeywords("本番ロールバックしてください", policy);
+  assert.strictEqual(r.triggered, true);
+  assert.ok(r.matchedKeyword, "matchedKeyword should be non-empty");
+});
+
+check("danger guard: safe text → not triggered", () => {
+  const r = gate.checkDangerKeywords("APIのp99レイテンシが通常の1.5倍。ログにエラー増なし", policy);
+  assert.strictEqual(r.triggered, false);
+  assert.strictEqual(r.matchedKeyword, null);
+});
+
+check("danger guard: English keyword case-insensitive → triggered", () => {
+  const r = gate.checkDangerKeywords("we need to ROLLBACK the last deploy immediately", policy);
+  assert.strictEqual(r.triggered, true);
+});
+
+check("danger guard: empty keywords list → not triggered", () => {
+  const emptyPolicy = { gate: policy.gate, safety: { danger_keywords: [] } };
+  const r = gate.checkDangerKeywords("本番ロールバック rm -rf", emptyPolicy);
+  assert.strictEqual(r.triggered, false);
+});
+
+check("danger guard: no safety section → not triggered (backward compat)", () => {
+  const noSafetyPolicy = { gate: policy.gate };
+  const r = gate.checkDangerKeywords("rollback everything drop database", noSafetyPolicy);
+  assert.strictEqual(r.triggered, false);
+});
+
 console.log(`\n${pass} checks passed.`);
