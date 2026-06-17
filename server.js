@@ -4,11 +4,57 @@
 // Endpoints:
 //   GET  /healthz  → 200 {"ok":true}  (Cloud Run health check)
 //   POST /triage   → run one loop, return gate verdict + recommendation
+//   GET  /         → serve demo UI from public/
 
 const http = require("http");
+const fs = require("fs");
+const path = require("path");
 const { runLoop } = require("./packages/core/intentloop");
 
 const PORT = Number(process.env.PORT) || 8080;
+
+// ---- Static file serving for the demo UI (public/) ----
+const PUBLIC_DIR = path.join(__dirname, "public");
+const MIME = {
+  ".html": "text/html; charset=utf-8",
+  ".js": "text/javascript; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
+  ".json": "application/json; charset=utf-8",
+  ".svg": "image/svg+xml",
+  ".ico": "image/x-icon",
+  ".png": "image/png",
+  ".woff2": "font/woff2",
+};
+
+// Serve a file from public/ if it exists & is inside the dir (path-traversal safe).
+// Returns true if the request was handled.
+function serveStatic(req, res) {
+  let urlPath = decodeURIComponent((req.url || "/").split("?")[0]);
+  if (urlPath === "/") urlPath = "/index.html";
+
+  const filePath = path.join(PUBLIC_DIR, urlPath);
+  // Block path traversal: resolved path must stay inside PUBLIC_DIR.
+  if (filePath !== PUBLIC_DIR && !filePath.startsWith(PUBLIC_DIR + path.sep)) {
+    return false;
+  }
+
+  let stat;
+  try {
+    stat = fs.statSync(filePath);
+  } catch {
+    return false;
+  }
+  if (!stat.isFile()) return false;
+
+  const ext = path.extname(filePath).toLowerCase();
+  const body = fs.readFileSync(filePath);
+  res.writeHead(200, {
+    "Content-Type": MIME[ext] || "application/octet-stream",
+    "Content-Length": body.length,
+  });
+  res.end(body);
+  return true;
+}
 
 // Determine incident response recommendation from gate result + risk axis.
 // Gate already enforces risk_max ≤ 0.40; anything that passes is "safe to act".
@@ -103,6 +149,11 @@ const server = http.createServer((req, res) => {
 
   if (req.method === "POST" && req.url === "/triage") {
     return handleTriage(req, res);
+  }
+
+  // Serve the demo UI (GET / → public/index.html, plus any static asset in public/).
+  if (req.method === "GET" || req.method === "HEAD") {
+    if (serveStatic(req, res)) return;
   }
 
   sendJSON(res, 404, { ok: false, error: `${req.method} ${req.url} not found` });
